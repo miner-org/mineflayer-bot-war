@@ -1,0 +1,18 @@
+{
+  "name": "@miner-org/mineflayer-bot-war",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Ash",
+  "license": "ISC",
+  "description": "A mineflayer plugin for the java plugin bot-war",
+  "dependencies": {
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "mineflayer": "^4.25.0"
+  }
+}
