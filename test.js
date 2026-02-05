@@ -1,5 +1,6 @@
 const mineflayer = require("mineflayer");
 const botWarPlugin = require("./index.js");
+const { Vec3 } = require("vec3");
 
 const bot = mineflayer.createBot({
   host: "localhost",
@@ -16,26 +17,53 @@ bot.once("spawn", async () => {
     url: "ws://localhost:8765",
     token: "92389d0ffe1547f1b41939abcc9f0b59",
   });
+  let teams = [];
 
   bot.botwar.client.on("ready", async () => {
-    console.log("uwu");
-    const teams = await bot.botwar.client.getTeams();
+    console.log("Authenticated!");
+  });
 
-    console.log(teams);
+  bot.on("messagestr", (msg, pos, chatMessage) => {
+    if (chatMessage.json.translate !== "chat.type.text") return;
+    const cleanName = username.replace(/[<>]/g, "").trim();
+    const usableMessage = Object.values(chatMessage.json.with[1])[0];
+    if (!usableMessage.startsWith(prefix)) return;
+
+    if (cleanName !== "AshLikesFood") return;
+
+    const args = usableMessage.split(" ");
+    const command = args.shift();
+
+    switch (command) {
+      case "joinTeam": {
+        const team = args[0];
+
+        bot.chat(`/join-team ${team}`);
+        break;
+      }
+    }
   });
 
   bot.botwar.client.on("gameStarted", async () => {
-    console.log("A game has started");
-    bot.botwar.client.on("startCapture", (pos, team) => {
-      console.log(pos, team);
-    });
+    //make sure we are actually in a team;
+    const response = await bot.botwar.client.getOwnTeam();
 
-    bot.botwar.client.on("controlCapture", (pos, team) => {
-      console.log("Captured", pos, team);
-    });
-  });
+    if (!response || (response && response.team == null)) return;
 
-  bot.botwar.client.on("gameEnd", () => {
-    console.log("A game has ended");
+    //get nearest control point
+    const controlResponse = await bot.botwar.client.getControlPoints();
+
+    if (!controlResponse) return;
+
+    const points = controlResponse.points
+      .map((p) => new Vec3(p.x, p.y, p.z))
+      .sort(
+        (a, b) =>
+          bot.entity.position.distanceTo(a) - bot.entity.position.distanceTo(b),
+      );
+
+      const closest = points[0];
+
+      
   });
 });

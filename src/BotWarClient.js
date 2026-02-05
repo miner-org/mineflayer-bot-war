@@ -3,8 +3,12 @@ const { WebSocket } = require("ws");
 const { v4: uuid } = require("uuid");
 
 class BotWarClient extends EventEmitter {
-  constructor(options = {}) {
+  #bot;
+
+  constructor(bot, options = {}) {
     super();
+    this.#bot = bot;
+
     /**
      * @type {import ("./types/WarClientOptions").WarClientOptions}
      */
@@ -77,6 +81,10 @@ class BotWarClient extends EventEmitter {
 
   getPlayerTeam(playerName) {
     return this.request("getPlayerTeam", { playerName });
+  }
+
+  getOwnTeam() {
+    return this.request("getPlayerTeam", { playerName: this.#bot.username });
   }
 }
 module.exports = BotWarClient;

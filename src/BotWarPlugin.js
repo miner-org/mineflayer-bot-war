@@ -12,7 +12,7 @@ class BotWarPlugin {
    * @param {import("./types/WarClientOptions.js").WarClientOptions} options
    */
   connect(options) {
-    this.client = new BotWarClient(options);
+    this.client = new BotWarClient(this.#bot, options);
   }
 }
 

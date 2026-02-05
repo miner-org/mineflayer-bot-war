@@ -1,45 +1,48 @@
 import TypedEmitter from "typed-emitter";
-
-interface SimpleVec3 {
-  x: number;
-  y: number;
-  z: number;
-}
+import {
+  PlayerKilledEvent,
+  TeamWinEvent,
+  StartCaptureEvent,
+  ControlCaptureEvent,
+  SimpleVec3,
+} from "./Event";
 
 export interface BotWarClientEvents {
   ready(): void | Promise<void>;
-  /**
-   *
-   * @param killer The kilelr
-   * @param dead The one that died
-   * @param team The killer's team
-   */
-  playerKilled(
-    killer: string,
-    dead: string,
-    team: string,
-  ): void | Promise<void>;
+
   gameStarted(): void | Promise<void>;
   gameEnd(): void | Promise<void>;
 
-  teamWin(team: string): void | Promise<void>;
-
-  startCapture(position: SimpleVec3, captureTeam: string): void | Promise<void>;
   /**
-   * @description Fires when a control point is captured
-   * @param position Position of the control point
-   * @param captureTeam The team that captured the point
+   * Fired when a player is killed
    */
-  controlCapture(
-    position: SimpleVec3,
-    captureTeam: string,
-  ): void | Promise<void>;
+  playerKilled(data: PlayerKilledEvent): void | Promise<void>;
+
+  teamWin(data: TeamWinEvent): void | Promise<void>;
+
+  /**
+   * Fired when a team starts capturing a control point
+   */
+  startCapture(data: StartCaptureEvent): void | Promise<void>;
+
+  /**
+   * Fired when a control point is fully captured
+   */
+  controlCapture(data: ControlCaptureEvent): void | Promise<void>;
 }
 
 export interface BotWarClient extends TypedEmitter<BotWarClientEvents> {
   authenticate(): void;
 
-  request(action: string, data: object): Promise<any>;
+  request<T = unknown>(
+    action: string,
+    payload?: Record<string, unknown>,
+  ): Promise<T>;
 
-  getTeams(): Promise<string[]>;
+  getTeams(): Promise<{ teams: string[] }>;
+  getControlPoints(): Promise<{ points: SimpleVec3[] }>;
+  getTeamScore(teamId: string): Promise<{ score: number }>;
+  getTeamPlayers(teamId: string): Promise<{ players: string[] }>;
+  getPlayerTeam(playerName: string): Promise<{ team: string }>;
+  getOwnTeam(): Promise<{ team: string }>;
 }
