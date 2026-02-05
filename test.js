@@ -18,9 +18,24 @@ bot.once("spawn", async () => {
   });
 
   bot.botwar.client.on("ready", async () => {
-    console.log("uwu")
+    console.log("uwu");
     const teams = await bot.botwar.client.getTeams();
 
     console.log(teams);
-  })
+  });
+
+  bot.botwar.client.on("gameStarted", async () => {
+    console.log("A game has started");
+    bot.botwar.client.on("startCapture", (pos, team) => {
+      console.log(pos, team);
+    });
+
+    bot.botwar.client.on("controlCapture", (pos, team) => {
+      console.log("Captured", pos, team);
+    });
+  });
+
+  bot.botwar.client.on("gameEnd", () => {
+    console.log("A game has ended");
+  });
 });

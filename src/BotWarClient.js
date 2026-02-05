@@ -1,6 +1,6 @@
 const EventEmitter = require("events");
 const { WebSocket } = require("ws");
-const { v4: uuid } = require("uuid");                  
+const { v4: uuid } = require("uuid");
 
 class BotWarClient extends EventEmitter {
   constructor(options = {}) {
@@ -49,18 +49,34 @@ class BotWarClient extends EventEmitter {
     }
   }
 
-  request(action, data) {
+  request(action, payload = {}) {
     if (!this.ready) return Promise.reject("BotWar not authenticated");
 
     return new Promise((resolve) => {
       const id = uuid();
       this.pending.set(id, resolve);
-      this.ws.send(JSON.stringify({ type: "request", id, action, data }));
+      this.ws.send(JSON.stringify({ type: "request", id, action, payload }));
     });
   }
 
   getTeams() {
     return this.request("getTeams");
+  }
+
+  getControlPoints() {
+    return this.request("getControlPoints");
+  }
+
+  getTeamScore(teamId) {
+    return this.request("getTeamScore", { teamId });
+  }
+
+  getTeamPlayers(teamId) {
+    return this.request("getTeamPlayers", { teamId });
+  }
+
+  getPlayerTeam(playerName) {
+    return this.request("getPlayerTeam", { playerName });
   }
 }
 module.exports = BotWarClient;

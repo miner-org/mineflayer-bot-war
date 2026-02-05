@@ -3,7 +3,13 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "git-update": "git add . && git commit -m \"my butt hurts\" && git push",
+    "npm-publish-patch": "npm version patch && npm publish --access public && git push origin main --tags",
+    "npm-publish-minor": "npm version minor && npm publish --access public && git push origin main --tags",
+    "npm-publish-major": "npm version major && npm publish --access public && git push origin main --tags",
+    "update-all-patch": "npm run git-update && npm run npm-publish-patch",
+    "update-all-minor": "npm run git-update && npm run npm-publish-minor",
+    "update-all-major": "npm run git-update && npm run npm-publish-major"
   },
   "keywords": [],
   "author": "Ash",
