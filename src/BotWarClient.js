@@ -28,7 +28,7 @@ class BotWarClient extends EventEmitter {
       JSON.stringify({
         type: "auth",
         token: this.options.token,
-        uuid: this.#bot._client.uuid,
+        uuid: this.#bot.entity.uuid,
       }),
     );
   }
