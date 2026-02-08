@@ -23,3 +23,7 @@ export interface ControlCaptureEvent {
   captureTeam: string;
   position: SimpleVec3;
 }
+
+export interface ControlDecayEvent {
+  position: SimpleVec3;
+}

@@ -5,7 +5,10 @@ import {
   StartCaptureEvent,
   ControlCaptureEvent,
   SimpleVec3,
+  ControlDecayEvent,
 } from "./Event";
+
+import { GameState } from "./GameState";
 
 export interface BotWarClientEvents {
   ready(): void | Promise<void>;
@@ -29,6 +32,8 @@ export interface BotWarClientEvents {
    * Fired when a control point is fully captured
    */
   controlCapture(data: ControlCaptureEvent): void | Promise<void>;
+
+  controlDecay(data: ControlDecayEvent): void | Promise<void>;
 }
 
 export interface BotWarClient extends TypedEmitter<BotWarClientEvents> {
@@ -45,4 +50,5 @@ export interface BotWarClient extends TypedEmitter<BotWarClientEvents> {
   getTeamPlayers(teamId: string): Promise<{ players: string[] }>;
   getPlayerTeam(playerName: string): Promise<{ team: string }>;
   getOwnTeam(): Promise<{ team: string }>;
+  getGameState(): Promise<{ gameState: GameState }>;
 }

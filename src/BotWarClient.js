@@ -7,6 +7,7 @@ class BotWarClient extends EventEmitter {
 
   constructor(bot, options = {}) {
     super();
+
     this.#bot = bot;
 
     /**
@@ -27,6 +28,7 @@ class BotWarClient extends EventEmitter {
       JSON.stringify({
         type: "auth",
         token: this.options.token,
+        uuid: this.#bot._client.uuid,
       }),
     );
   }
@@ -87,4 +89,5 @@ class BotWarClient extends EventEmitter {
     return this.request("getPlayerTeam", { playerName: this.#bot.username });
   }
 }
+
 module.exports = BotWarClient;
