@@ -4,10 +4,8 @@ const { loader: baritone } = require("@miner-org/mineflayer-baritone");
 const { BotRole, BotWarBot } = require("./botWarBot");
 
 const botsConfig = [
-  { username: "Frisk", role: BotRole.CAPTURER, joinTeam: "blue" },
-  { username: "Chara", role: BotRole.DEFENDER, joinTeam: "blue" },
-  { username: "Chisomo", role: BotRole.DEFENDER, joinTeam: "red" },
-  { username: "Najira", role: BotRole.CAPTURER, joinTeam: "red" },
+  { username: "Frisk", role: BotRole.CAPTURER },
+  { username: "Chara", role: BotRole.DEFENDER },
 ];
 
 const controlPoints = new Map();
@@ -35,7 +33,12 @@ const controlPoints = new Map();
         // bot.chat(`/join-team ${cfg.joinTeam}`);
       });
 
-      bot.botwar.client.on("gameStarted", async () => {
+      bot.botwar.client.on("duelStarted", async ({ gameId, team1, team2 }) => {
+        const allPlayers = team1.members.concat(team2.members);
+
+        //this duel is not for us
+        if (!allPlayers.includes(bot.username)) return;
+
         controlPoints.clear();
         const { points } = await bot.botwar.client.getControlPoints();
         points.forEach((p) =>
@@ -45,16 +48,21 @@ const controlPoints = new Map();
           }),
         );
         bot.botWarBot = new BotWarBot(bot, controlPoints, cfg.role);
+
+        bot.botWarBot.setGameId(gameId);
         bot.botWarBot.start();
       });
 
-      bot.botwar.client.on("gameEnd", () => {
+      bot.botwar.client.on("gameEnd", ({ gameId }) => {
         bot.botWarBot?.stop();
       });
 
-      bot.botwar.client.on("controlCapture", ({ captureTeam, position }) => {
-        bot.botWarBot?.onPointCaptured(position, captureTeam);
-      });
+      bot.botwar.client.on(
+        "controlCapture",
+        ({ captureTeam, position, gameId }) => {
+          bot.botWarBot?.onPointCaptured(position, captureTeam, gameId);
+        },
+      );
     });
 
     await new Promise((r) => setTimeout(r, 5000));

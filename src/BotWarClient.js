@@ -65,28 +65,33 @@ class BotWarClient extends EventEmitter {
     });
   }
 
-  getTeams() {
-    return this.request("getTeams");
+  getTeams(gameId = null) {
+    return this.request("getTeams", { gameId });
   }
 
-  getControlPoints() {
-    return this.request("getControlPoints");
+  getControlPoints(gameId) {
+    if (!gameId) return console.error("No game id supplied");
+    return this.request("getControlPoints", { gameId });
   }
 
-  getTeamScore(teamId) {
-    return this.request("getTeamScore", { teamId });
+  getTeamScore(teamId, gameId) {
+    if (!gameId) return console.error("No game id supplied");
+    return this.request("getTeamScore", { teamId, gameId });
   }
 
-  getTeamPlayers(teamId) {
-    return this.request("getTeamPlayers", { teamId });
+  getTeamPlayers(teamId, gameId = null) {
+    return this.request("getTeamPlayers", { teamId, gameId });
   }
 
-  getPlayerTeam(playerName) {
+  getPlayerTeam(playerName, gameId = null) {
     return this.request("getPlayerTeam", { playerName });
   }
 
-  getOwnTeam() {
-    return this.request("getPlayerTeam", { playerName: this.#bot.username });
+  getOwnTeam(gameId = null) {
+    return this.request("getPlayerTeam", {
+      playerName: this.#bot.username,
+      gameId,
+    });
   }
 }
 

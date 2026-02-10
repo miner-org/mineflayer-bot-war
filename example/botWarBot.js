@@ -42,6 +42,7 @@ class BotWarBot {
     this.debug = options.debug ?? true;
     this.ownTeamId = null;
     this.teamates = [];
+    this.gameId = null;
 
     if (this.role === BotRole.DEFENDER) {
       this.attackCooldown = options.attackCooldown ?? 700;
@@ -49,10 +50,17 @@ class BotWarBot {
     }
   }
 
+  setGameId(id) {
+    this.gameId = id;
+  }
+
   async initTeam() {
-    const res = await this.bot.botwar.client.getOwnTeam();
+    const res = await this.bot.botwar.client.getOwnTeam(this.gameId);
     this.ownTeamId = res?.team ?? null;
-    const res2 = await this.bot.botwar.client.getTeamPlayers(this.ownTeamId);
+    const res2 = await this.bot.botwar.client.getTeamPlayers(
+      this.ownTeamId,
+      this.gameId,
+    );
     this.teamates =
       res2?.players?.filter((name) => name !== this.bot.username) ?? [];
 
@@ -85,14 +93,18 @@ class BotWarBot {
   }
 
   stop() {
+    if (!this.running) return;
     this.log("Stopping bot war bot");
     this.running = false;
     this.target = null;
+    this.gameId = null;
     this.logStateChange(BotState.STOPPED);
     this.bot.ashfinder.stop();
   }
 
-  onPointCaptured(position, teamId) {
+  onPointCaptured(position, teamId, gameId) {
+    if (gameId !== this.gameId) return;
+
     const key = vecToString(position);
     this.controlPoints.set(key, { capped: true, teamId });
 
