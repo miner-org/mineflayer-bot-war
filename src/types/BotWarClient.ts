@@ -51,6 +51,7 @@ export interface BotWarClient extends TypedEmitter<BotWarClientEvents> {
     payload?: Record<string, unknown>,
   ): Promise<T>;
 
+  getAllPlayers(gameId: string): Promise<{ players: string[] }>;
   getTeams(gameId?: string): Promise<{ teams: string[] }>;
   getControlPoints(gameId: string): Promise<{ points: SimpleVec3[] }>;
   getTeamScore(gameId: string, teamId: string): Promise<{ score: number }>;

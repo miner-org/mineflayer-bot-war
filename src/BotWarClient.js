@@ -65,6 +65,11 @@ class BotWarClient extends EventEmitter {
     });
   }
 
+  getAllPlayers(gameId) {
+    if (!gameId) return console.error("No game id supplied");
+    return this.request("getAllPlayers", { gameId });
+  }
+
   getTeams(gameId = null) {
     return this.request("getTeams", { gameId });
   }

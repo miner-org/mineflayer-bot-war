@@ -42,6 +42,7 @@ class BotWarBot {
     this.debug = options.debug ?? true;
     this.ownTeamId = null;
     this.teamates = [];
+    this.allPlayers = [];
     this.gameId = null;
 
     if (this.role === BotRole.DEFENDER) {
@@ -68,6 +69,11 @@ class BotWarBot {
     this.log("Teamates", this.teamates);
   }
 
+  async initAllPlayers() {
+    const res = await this.bot.botwar.client.getAllPlayers(this.gameId);
+    this.allPlayers = res?.players ?? [];
+  }
+
   log(...args) {
     if (!this.debug) return;
     console.log(`[BWB]`, ...args);
@@ -85,6 +91,7 @@ class BotWarBot {
     if (this.running) return;
     this.running = true;
 
+    await this.initAllPlayers();
     await this.initTeam();
 
     this.log("Starting bot war bot");
@@ -92,8 +99,9 @@ class BotWarBot {
     this.loop();
   }
 
-  stop() {
+  stop(gameId) {
     if (!this.running) return;
+    if (gameId !== this.gameId) return;
     this.log("Stopping bot war bot");
     this.running = false;
     this.target = null;
@@ -191,6 +199,7 @@ class BotWarBot {
           e.type === "player" &&
           !this.teamates.includes(e.username) &&
           e.username !== this.bot.username,
+        this.allPlayers.includes(e.username),
       )
       .sort(
         (a, b) =>

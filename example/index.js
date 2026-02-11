@@ -4,8 +4,8 @@ const { loader: baritone } = require("@miner-org/mineflayer-baritone");
 const { BotRole, BotWarBot } = require("./botWarBot");
 
 const botsConfig = [
-  { username: "Frisk", role: BotRole.CAPTURER },
-  { username: "Chara", role: BotRole.DEFENDER },
+  { username: "WarCapturer", role: BotRole.CAPTURER },
+  { username: "WarDefender", role: BotRole.DEFENDER },
 ];
 
 const controlPoints = new Map();
@@ -25,22 +25,18 @@ const controlPoints = new Map();
     bot.once("spawn", async () => {
       await bot.waitForChunksToLoad();
       bot.botwar.connect({
-        url: "localhost:67420",
-        token: "token",
+        url: "ws://localhost:67420",
+        token: "tokenHere",
       });
 
       bot.botwar.client.on("ready", () => {
-        // bot.chat(`/join-team ${cfg.joinTeam}`);
+        console.log("Authenticated!");
       });
 
-      bot.botwar.client.on("duelStarted", async ({ gameId, team1, team2 }) => {
-        const allPlayers = team1.members.concat(team2.members);
-
-        //this duel is not for us
-        if (!allPlayers.includes(bot.username)) return;
-
+      bot.botwar.client.on("joinGame", async ({ gameId }) => {
+        // console.log(gameId);
         controlPoints.clear();
-        const { points } = await bot.botwar.client.getControlPoints();
+        const { points } = await bot.botwar.client.getControlPoints(gameId);
         points.forEach((p) =>
           controlPoints.set(`${p.x},${p.y},${p.z}`, {
             capped: false,
