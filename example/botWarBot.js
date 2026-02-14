@@ -198,8 +198,8 @@ class BotWarBot {
           e.isValid &&
           e.type === "player" &&
           !this.teamates.includes(e.username) &&
-          e.username !== this.bot.username,
-        this.allPlayers.includes(e.username),
+          e.username !== this.bot.username &&
+          this.allPlayers.includes(e.username),
       )
       .sort(
         (a, b) =>
