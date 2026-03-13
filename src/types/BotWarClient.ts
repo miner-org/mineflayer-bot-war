@@ -10,6 +10,7 @@ import {
   GameEndEvent,
   DuelStartEvent,
   DuelEndEvent,
+  JoinGameEvent,
 } from "./Event";
 
 import { GameState } from "./GameState";
@@ -19,6 +20,7 @@ export interface BotWarClientEvents {
 
   gameStarted(data: GameStartEvent): void | Promise<void>;
   gameEnd(data: GameEndEvent): void | Promise<void>;
+  joinGame(data: JoinGameEvent): void | Promise<void>;
 
   duelStarted(data: DuelStartEvent): void | Promise<void>;
   duelEnded(data: DuelEndEvent): void | Promise<void>;

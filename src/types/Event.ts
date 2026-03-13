@@ -55,3 +55,7 @@ export interface DuelStartEvent {
 export interface DuelEndEvent {
   gameId: string;
 }
+
+export interface JoinGameEvent {
+  gameId: string;
+}
